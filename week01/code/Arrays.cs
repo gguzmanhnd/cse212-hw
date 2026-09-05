@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 public static class Arrays
 {
     /// <summary>
@@ -13,7 +15,18 @@ public static class Arrays
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
 
-        return []; // replace this return statement with your own
+// Step 1: Create an array of doubles with the specified length     
+        double[] result = new double[length];
+
+// Step 2: Fill the array with multiples of the supplied number
+        for (int i = 0; i < length; i++)
+        {
+            result[i] = number * (i + 1);
+        }
+
+// Step 3: Return the resulting array
+      return result;
+        
     }
 
     /// <summary>
@@ -25,9 +38,24 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // step 1:  Check edge cases where no rotation is needed.
+        if (data == null || data.Count <= 0)
+        {
+            return; // No rotation needed
+        }
+
+        //step 2: Normalize the rotation amount in case amount is>= data.count.
+        int efectiveAmount = amount % data.Count;
+        if (efectiveAmount == 0)
+        {
+            return; // No rotation needed
+        }
+        // Step 3: Calculate starting point for the slice.
+        int startIndex = data.Count - efectiveAmount;
+
+        //step 4 : Extract end items, remove them from back, insert at front.
+        List<int> rightSlice = data.GetRange(startIndex, efectiveAmount);
+        data.RemoveRange(startIndex, efectiveAmount);
+        data.InsertRange(0, rightSlice);
     }
 }
