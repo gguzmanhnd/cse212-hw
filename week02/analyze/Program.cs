@@ -1,5 +1,6 @@
 ﻿Console.WriteLine("\n======================\nMysteryStack1\n======================");
 Console.WriteLine(MysteryStack1.Run("racecar"));
+Console.WriteLine(MysteryStack1.Run("Gerardo"));
 Console.WriteLine(MysteryStack1.Run("stressed"));
 Console.WriteLine(MysteryStack1.Run("a nut for a jar of tuna"));
 
