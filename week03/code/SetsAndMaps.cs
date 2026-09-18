@@ -22,7 +22,23 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+    var seen = new HashSet<string>();
+    var result = new List<string>();
+    foreach (var word in words)
+        {
+            if (word.Length == 2)
+            { var rev = $"{word[1]}{word[0]}";
+                if (seen.Contains(rev))
+                {
+                    result.Add($"{word} & {rev}");
+                }
+                else
+                {
+                    seen.Add(word);
+                }
+            }
+        }
+        return result.ToArray();
     }
 
     /// <summary>
@@ -35,7 +51,7 @@ public static class SetsAndMaps
     /// file.
     /// </summary>
     /// <param name="filename">The name of the file to read</param>
-    /// <returns>fixed array of divisors</returns>
+    /// <returns>Dictionary mapping degrees to their counts</returns>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
         var degrees = new Dictionary<string, int>();
@@ -43,10 +59,18 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
-        }
+            if (fields.Length >= 3)
+            {
+                var degree = fields[3].Trim();
+                degrees[degree] = degrees.GetValueOrDefault(degree, 0) + 1;
+                    }
+                }
+                return degrees;
+            }
+        
 
-        return degrees;
-    }
+        
+    
 
     /// <summary>
     /// Determine if 'word1' and 'word2' are anagrams.  An anagram
@@ -67,7 +91,32 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        var d = new Dictionary<char, int>();
+        int count1 = 0;
+        foreach (var c in word1)
+        {
+        if (c != ' ')
+            {
+                char lower = char.ToLower(c);
+                d[lower] = d.GetValueOrDefault(lower, 0) + 1;
+                count1++;
+            }
+        }
+        int count2 = 0;
+        foreach (var c in word2)
+        {
+            if (c != ' ')
+            {
+                char lower = char.ToLower(c);
+                if (!d.ContainsKey(lower)) return false;
+                d[lower]--;
+                if (d[lower] < 0) return false;
+                count2++;
+            }
+        }
+
+
+        return count1 == count2;
     }
 
     /// <summary>
