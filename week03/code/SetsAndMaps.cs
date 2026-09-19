@@ -119,6 +119,7 @@ public static class SetsAndMaps
         return count1 == count2;
     }
 
+
     /// <summary>
     /// This function will read JSON (Javascript Object Notation) data from the 
     /// United States Geological Service (USGS) consisting of earthquake data.
@@ -133,23 +134,49 @@ public static class SetsAndMaps
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
+    
     public static string[] EarthquakeDailySummary()
     {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
         using var client = new HttpClient();
-        using var getRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-        using var jsonStream = client.Send(getRequestMessage).Content.ReadAsStream();
-        using var reader = new StreamReader(jsonStream);
-        var json = reader.ReadToEnd();
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        
+        string json;
+        try
+        {
+            using var response = client.GetAsync(uri).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                return [];
+            }
 
+            using var jsonStream = response.Content.ReadAsStream();
+            using var reader = new StreamReader(jsonStream);
+            json = reader.ReadToEnd();
+        }
+        catch
+        {
+            return [];
+        }
+
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
-        // TODO Problem 5:
-        // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
-        // on those classes so that the call to Deserialize above works properly.
-        // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
-        // 3. Return an array of these string descriptions.
-        return [];
-    }
-}
+      
+        if (featureCollection == null || featureCollection.Features == null)
+        {
+            return [];
+        }
+
+        var resultList = new List<string>();
+        foreach (var feature in featureCollection.Features)
+        {
+            if (feature?.Properties != null)
+            {
+                var place = feature.Properties.Place ?? "Unknown location";
+                var mag = feature.Properties.Mag?.ToString() ?? "0";
+                resultList.Add($"{place} - Mag {mag}");
+            }
+        }
+
+        return resultList.ToArray();
+    }}
